@@ -1,10 +1,13 @@
 package com.farkasatesz.myshoppinglist.di
 
 import com.farkasatesz.myshoppinglist.firebase.fireStore.category.CategoryImpl
+import com.farkasatesz.myshoppinglist.firebase.fireStore.product.ProductImpl
 import com.farkasatesz.myshoppinglist.firebase.fireStore.supermarket.SupermarketImpl
 import com.farkasatesz.myshoppinglist.firebase.fireStore.unitType.UnitTypeImpl
 import com.farkasatesz.myshoppinglist.models.category.CategoryRepository
 import com.farkasatesz.myshoppinglist.models.category.CategoryViewModel
+import com.farkasatesz.myshoppinglist.models.product.ProductRepository
+import com.farkasatesz.myshoppinglist.models.product.ProductViewModel
 import com.farkasatesz.myshoppinglist.models.supermarket.SupermarketRepository
 import com.farkasatesz.myshoppinglist.models.supermarket.SupermarketViewModel
 import com.farkasatesz.myshoppinglist.models.unitType.UnitTypeRepository
@@ -27,6 +30,11 @@ val appModule = module {
     single { SupermarketImpl(get()) }
     single { SupermarketRepository(get()) }
     viewModel { SupermarketViewModel(get()) }
+
+    single { ProductImpl(get()) }
+    single { ProductRepository(get()) }
+    viewModel { ProductViewModel(get()) }
+
 
 
 }
