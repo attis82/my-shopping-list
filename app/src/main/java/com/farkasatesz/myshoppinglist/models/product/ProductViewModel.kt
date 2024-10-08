@@ -12,10 +12,10 @@ class ProductViewModel(private val productRepository: ProductRepository) : BaseV
     private val _exists = MutableStateFlow(false)
     val exists = _exists.asStateFlow()
 
-    fun checkIfProductExists(name: String, unitType: DocumentReference){
+    fun checkIfProductExists(name: String, unitTypeId: String){
         viewModelScope.launch {
             try {
-                _exists.value = productRepository.checkExistence(name, unitType)
+                _exists.value = productRepository.checkExistence(name, unitTypeId)
             } catch (e: Exception) {
                 Log.e("ProductViewModel", "Error checking existence", e)
             }
