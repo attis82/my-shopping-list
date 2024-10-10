@@ -1,15 +1,16 @@
 package com.farkasatesz.myshoppinglist.components.baseComponents
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -18,9 +19,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -109,45 +115,121 @@ fun MyInput(
 }
 
 @Composable
-fun <T: BaseEntity> MyCard(item : T){
+fun DeletionDialog(
+    dismiss: () -> Unit,
+    itemName: String,
+    delete: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { dismiss() },
+        confirmButton = {
+            MyButton(text = {
+                MyText(
+                    text = "Delete",
+                    color = Color.Red
+                )
+            }
+            ) {
+            delete()
+            dismiss()
+        } },
+        dismissButton = {
+            MyButton(text = {
+                MyText(text = "Cancel")
+            }) {
+                dismiss()
+            }
+        },
+        title = {
+            MyText(text = "Deleting $itemName")
+        },
+        text = {
+            MyText(text = "Are you sure you want to delete $itemName?")
+        },
+        tonalElevation = 20.dp
+    )
+}
+
+@Composable
+fun BaseTopBar(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    var showCreator by remember { mutableStateOf(false) }
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MyText(text = title, fontSize = 20, fontWeight = FontWeight.Thin)
+                MyButton(
+                    text = {
+                        MyText(text = if(showCreator) "Hide creator" else "Show creator")
+                    }
+                ) {
+                    showCreator = !showCreator
+                }
+            }
+            AnimatedVisibility(showCreator){
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+fun <T: BaseEntity> BaseCard(
+    item: T,
+    selectItem: (T) -> Unit,
+    delete: () -> Unit,
+    content: @Composable () -> Unit,
+    creator: @Composable () -> Unit
+) {
+    var showCreator by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .height(80.dp),
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        selectItem(item)
+                        showCreator = !showCreator
+                    },
+                    onDoubleTap = {
+                        selectItem(item)
+                        delete()
+                    }
+                )
+            },
         colors = CardDefaults.cardColors(
             containerColor = CardColor,
             contentColor = TextColor
-            ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
         )
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            MyText(text = item.entityName)
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            content()
+            AnimatedVisibility(showCreator){
+                creator()
+            }
         }
     }
 
 }
 
-@Composable
-fun <T: BaseEntity> ListView(
-    items: List<T>,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        items(items = items){ item->
-            MyCard(item)
-        }
-    }
-}

@@ -9,17 +9,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 open class BaseViewModel<T : BaseEntity>(private val baseRepository: BaseRepository<T>) : ViewModel(){
-    private val _query = MutableStateFlow("")
-    val query = _query.asStateFlow()
 
-    private val _items = _query.debounce(500).flatMapLatest {
+    private val _selected = MutableStateFlow<T?>(null)
+    val selected = _selected.asStateFlow()
+
+    private val _itemName = MutableStateFlow( "")
+    val itemName = _itemName.asStateFlow()
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog = _showDialog.asStateFlow()
+
+    private val _items = _itemName.debounce(500).flatMapLatest {
         if (it.isEmpty()) {
             baseRepository.getAll()
         } else {
@@ -29,14 +35,27 @@ open class BaseViewModel<T : BaseEntity>(private val baseRepository: BaseReposit
 
     val items = _items
 
-    fun setQuery(query: String) {
-        _query.value = query
+    fun setSelected(item: T) {
+        _selected.value = item
+    }
+
+    fun setItemName(name: String) {
+        _itemName.value = name
+    }
+
+    fun showDialog() {
+        _showDialog.value = true
+    }
+
+    fun hideDialog() {
+        _showDialog.value = false
     }
 
     fun create(item: T) {
         viewModelScope.launch {
             try {
                 baseRepository.create(item)
+                refresh()
             }catch (e: Exception) {
                 Log.e("BaseViewModel", "Error creating item", e)
             }
@@ -47,6 +66,7 @@ open class BaseViewModel<T : BaseEntity>(private val baseRepository: BaseReposit
         viewModelScope.launch {
             try {
                 baseRepository.update(item)
+                refresh()
             } catch (e: Exception) {
                 Log.e("BaseViewModel", "Error updating item", e)
             }
@@ -57,10 +77,17 @@ open class BaseViewModel<T : BaseEntity>(private val baseRepository: BaseReposit
         viewModelScope.launch {
             try {
                 baseRepository.delete(id)
+                _selected.value = null
+                refresh()
             } catch (e: Exception) {
                 Log.e("BaseViewModel", "Error deleting item", e)
             }
         }
+    }
+
+    private fun refresh(){
+        _itemName.value = " "
+        _itemName.value = ""
     }
 
 }
