@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.farkasatesz.myshoppinglist.components.baseComponents.DeletionDialog
-import com.farkasatesz.myshoppinglist.components.baseComponents.MyText
 import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryCreator
 import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryList
 import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryTopBar

@@ -1,6 +1,5 @@
 package com.farkasatesz.myshoppinglist.components.baseComponents
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -39,7 +38,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryCard
 import com.farkasatesz.myshoppinglist.models.BaseEntity
 import com.farkasatesz.myshoppinglist.ui.theme.BgColor
 import com.farkasatesz.myshoppinglist.ui.theme.CardColor
