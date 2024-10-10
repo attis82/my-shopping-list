@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,11 +20,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.farkasatesz.myshoppinglist.models.BaseEntity
+import com.farkasatesz.myshoppinglist.models.BaseViewModel
 import com.farkasatesz.myshoppinglist.ui.theme.BgColor
 import com.farkasatesz.myshoppinglist.ui.theme.CardColor
 import com.farkasatesz.myshoppinglist.ui.theme.TextColor
@@ -232,7 +236,9 @@ fun <T: BaseEntity> BaseCard(
         ){
             content()
             AnimatedVisibility(showCreator){
-                creator()
+                BaseCreator {
+                    creator()
+                }
             }
         }
     }
@@ -250,7 +256,6 @@ fun BaseCreator(
             containerColor = BgColor,
             contentColor = TextColor
         ),
-        border = BorderStroke(width = 1.dp, color = TextColor)
     ) {
         Column(
             modifier = Modifier
@@ -265,29 +270,54 @@ fun BaseCreator(
     }
 }
 
+
 @Composable
-fun <T: BaseEntity> BaseList(
-    modifier: Modifier = Modifier,
-    items: List<T>,
-    delete: () -> Unit,
-    selectItem: (T) -> Unit,
-    content: @Composable (T) -> Unit,
-    creator: @Composable () -> Unit
+fun <T: BaseEntity> BaseScaffold(
+    viewModel: BaseViewModel<T>,
+    topBar: @Composable () -> Unit,
+    cardContent: @Composable (T) -> Unit,
+    creator: @Composable (T) -> Unit
 ) {
-    LazyColumn(modifier = modifier) {
-        items(items=items){ item ->
-            BaseCard(
-                item = item,
-                selectItem ={ selectItem(item) },
-                delete = { delete() },
-                content = {
-                    content(item)
+    var selectedItem by remember { mutableStateOf<T?>(null) }
+    var showDeletionDialog by remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+    val items by viewModel.items.collectAsState()
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BgColor),
+        topBar = {
+            topBar()
+        }
+    ) {
+        LazyColumn(modifier = Modifier.padding(it)) {
+            items(items = items){ item ->
+                BaseCard(
+                    item = item,
+                    selectItem = {
+                        selectedItem = items.find { i -> i.entityId == item.entityId }
+                        name = item.entityName
+                    },
+                    delete = { showDeletionDialog = true },
+                    content = {
+                        cardContent(item)
+                    }
+                ) {
+                    creator(selectedItem!!)
                 }
-            ) {
-                creator()
             }
         }
     }
 
+    if (showDeletionDialog) {
+        DeletionDialog(
+            dismiss = { showDeletionDialog = false },
+            itemName = selectedItem?.entityName ?: "",
+            delete = {
+                viewModel.delete(selectedItem?.entityId!!)
+                selectedItem = null
+            }
+        )
+    }
 }
 
