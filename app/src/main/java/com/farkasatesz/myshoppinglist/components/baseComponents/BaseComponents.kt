@@ -1,13 +1,19 @@
 package com.farkasatesz.myshoppinglist.components.baseComponents
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
@@ -33,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryCard
 import com.farkasatesz.myshoppinglist.models.BaseEntity
 import com.farkasatesz.myshoppinglist.ui.theme.BgColor
 import com.farkasatesz.myshoppinglist.ui.theme.CardColor
@@ -103,11 +110,11 @@ fun MyInput(
             }
         ),
         colors = TextFieldDefaults.colors(
-            focusedTextColor = BgColor,
-            focusedContainerColor = TextColor,
+            focusedTextColor = TextColor,
+            focusedContainerColor = CardColor,
             unfocusedContainerColor = CardColor,
-            unfocusedTextColor = TextColor,
-            cursorColor = BgColor,
+            unfocusedTextColor = BgColor,
+            cursorColor = TextColor,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         )
@@ -220,12 +227,65 @@ fun <T: BaseEntity> BaseCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(10.dp)
+                .background(Color.Transparent),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             content()
             AnimatedVisibility(showCreator){
+                creator()
+            }
+        }
+    }
+
+}
+
+@Composable
+fun BaseCreator(
+    content: @Composable () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = BgColor,
+            contentColor = TextColor
+        ),
+        border = BorderStroke(width = 1.dp, color = TextColor)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
+                .padding(10.dp),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun <T: BaseEntity> BaseList(
+    modifier: Modifier = Modifier,
+    items: List<T>,
+    delete: () -> Unit,
+    selectItem: (T) -> Unit,
+    content: @Composable (T) -> Unit,
+    creator: @Composable () -> Unit
+) {
+    LazyColumn(modifier = modifier) {
+        items(items=items){ item ->
+            BaseCard(
+                item = item,
+                selectItem ={ selectItem(item) },
+                delete = { delete() },
+                content = {
+                    content(item)
+                }
+            ) {
                 creator()
             }
         }

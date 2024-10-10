@@ -1,5 +1,6 @@
 package com.farkasatesz.myshoppinglist.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -11,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.farkasatesz.myshoppinglist.components.baseComponents.DeletionDialog
+import com.farkasatesz.myshoppinglist.components.baseComponents.MyText
 import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryCreator
 import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryList
 import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryTopBar
@@ -28,8 +30,9 @@ fun CategoryScreen(viewModel: CategoryViewModel)  {
     var showDeletionDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = BgColor,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BgColor),
         topBar = {
             CategoryTopBar(
                 categoryName = categoryName.value,
