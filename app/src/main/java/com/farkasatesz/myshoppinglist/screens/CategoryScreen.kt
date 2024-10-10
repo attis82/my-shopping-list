@@ -8,8 +8,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.farkasatesz.myshoppinglist.components.baseComponents.BaseScaffold
 import com.farkasatesz.myshoppinglist.components.baseComponents.MyText
-import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryCreator
-import com.farkasatesz.myshoppinglist.components.categoryComponents.CategoryTopBar
+import com.farkasatesz.myshoppinglist.components.typeComponents.CategoryCreator
+import com.farkasatesz.myshoppinglist.components.typeComponents.CategoryTopBar
 import com.farkasatesz.myshoppinglist.models.category.Category
 import com.farkasatesz.myshoppinglist.models.category.CategoryViewModel
 

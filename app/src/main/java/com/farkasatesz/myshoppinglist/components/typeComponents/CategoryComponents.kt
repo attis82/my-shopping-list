@@ -1,4 +1,4 @@
-package com.farkasatesz.myshoppinglist.components.categoryComponents
+package com.farkasatesz.myshoppinglist.components.typeComponents
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
@@ -32,7 +32,7 @@ fun CategoryCreator(
             if(categoryName.isNotEmpty() && !checkExistence){
                 saveCategory()
             }else if(categoryName.isEmpty()){
-                Toast.makeText(context, "Please enter a category name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Name cannot be empty", Toast.LENGTH_SHORT).show()
             }else if(checkExistence){
                 Toast.makeText(context, "$categoryName already exists", Toast.LENGTH_SHORT).show()
             }
