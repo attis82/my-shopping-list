@@ -18,11 +18,6 @@ class SupermarketViewModel(private val supermarketRepository: SupermarketReposit
         _location.value = location
     }
 
-    fun clearEditFields() {
-        this.setEditName("")
-        _location.value = ""
-    }
-
     fun checkIfSupermarketExists(name: String, location: String){
         viewModelScope.launch {
             try {

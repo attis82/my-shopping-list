@@ -16,8 +16,12 @@ import com.farkasatesz.myshoppinglist.models.category.CategoryViewModel
 @Composable
 fun CategoryScreen(viewModel: CategoryViewModel)  {
     val categoryName by viewModel.itemName.collectAsState()
-    var name by remember { mutableStateOf("") }
+    val editName by viewModel.editName.collectAsState()
     val exists by viewModel.exists.collectAsState()
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+
+    if(selectedCategory != null) viewModel.setEditName(selectedCategory!!.entityName)
+
 
     BaseScaffold(
         viewModel = viewModel,
@@ -39,15 +43,16 @@ fun CategoryScreen(viewModel: CategoryViewModel)  {
             MyText(text = it.entityName)
         }
     ) {
+        selectedCategory = it
         CategoryCreator(
-            categoryName = name,
-            onCategoryNameChange = {
-                name = it
-                viewModel.checkIfCategoryExists(name)
+            categoryName = editName,
+            onCategoryNameChange = { text ->
+                viewModel.setEditName(text)
+                viewModel.checkIfCategoryExists(text)
             },
             checkExistence = exists
         ) {
-            val category = Category(entityId = it.entityId, entityName = name)
+            val category = Category(entityId = it.entityId, entityName = editName)
             viewModel.update(category)
         }
     }
