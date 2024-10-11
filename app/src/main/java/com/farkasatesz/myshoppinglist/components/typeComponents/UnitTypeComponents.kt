@@ -51,9 +51,9 @@ fun UnitTypeTopBar(
 ) {
     BaseTopBar(title = "Unit types") {
         UnitTypeCreator(
-            unitTypeName = unitTypeName,
-            onUnitTypeNameChange = { onUnitTypeNameChange(it) },
-            checkExistence = checkExistence
+            unitTypeName,
+            onUnitTypeNameChange,
+            checkExistence
         ) {
             saveUnitType()
         }

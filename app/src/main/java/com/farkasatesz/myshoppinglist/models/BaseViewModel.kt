@@ -22,6 +22,9 @@ open class BaseViewModel<T : BaseEntity>(private val baseRepository: BaseReposit
     private val _itemName = MutableStateFlow( "")
     val itemName = _itemName.asStateFlow()
 
+    private val _editName = MutableStateFlow("")
+    val editName = _editName.asStateFlow()
+
     private val _showDialog = MutableStateFlow(false)
     val showDialog = _showDialog.asStateFlow()
 
@@ -37,6 +40,10 @@ open class BaseViewModel<T : BaseEntity>(private val baseRepository: BaseReposit
 
     fun setSelected(item: T) {
         _selected.value = item
+    }
+
+    fun setEditName(name: String) {
+        _editName.value = name
     }
 
     fun setItemName(name: String) {

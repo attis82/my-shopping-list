@@ -11,6 +11,18 @@ class SupermarketViewModel(private val supermarketRepository: SupermarketReposit
     private val _exists = MutableStateFlow(false)
     val exists = _exists.asStateFlow()
 
+    private val _location = MutableStateFlow("")
+    val location = _location.asStateFlow()
+
+    fun setLocation(location: String) {
+        _location.value = location
+    }
+
+    fun clearEditFields() {
+        this.setEditName("")
+        _location.value = ""
+    }
+
     fun checkIfSupermarketExists(name: String, location: String){
         viewModelScope.launch {
             try {

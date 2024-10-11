@@ -50,9 +50,9 @@ fun CategoryTopBar(
 ) {
     BaseTopBar(title = "Categories") {
         CategoryCreator(
-            categoryName = categoryName,
-            onCategoryNameChange = { onCategoryNameChange(it) },
-            checkExistence = checkExistence
+            categoryName,
+            onCategoryNameChange,
+            checkExistence
         ) {
             saveCategory()
         }
