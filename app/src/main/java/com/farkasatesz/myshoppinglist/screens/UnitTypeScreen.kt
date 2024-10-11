@@ -17,7 +17,10 @@ import com.farkasatesz.myshoppinglist.models.unitType.UnitTypeViewModel
 fun UnitTypeScreen(viewModel: UnitTypeViewModel) {
     val unitTypeName by viewModel.itemName.collectAsState()
     val exists by viewModel.exists.collectAsState()
-    var name by remember { mutableStateOf("") }
+    val editName by viewModel.editName.collectAsState()
+    var selectedUnitType by remember { mutableStateOf<UnitType?>(null) }
+
+    if(selectedUnitType != null) viewModel.setEditName(selectedUnitType!!.entityName)
 
     BaseScaffold(
         viewModel = viewModel,
@@ -39,15 +42,16 @@ fun UnitTypeScreen(viewModel: UnitTypeViewModel) {
             MyText(text = it.entityName)
         }
     ) {
+        selectedUnitType = it
         UnitTypeCreator(
-            unitTypeName = name,
+            unitTypeName = editName,
             onUnitTypeNameChange = {
-                text -> name = text
-                viewModel.checkIfUnitTypeExists(name)
+                text ->  viewModel.setEditName(text)
+                viewModel.checkIfUnitTypeExists(text)
                                    },
             checkExistence = exists
         ) {
-            val unitType = UnitType(entityId = it.entityId, entityName = name)
+            val unitType = UnitType(entityId = it.entityId, entityName = editName)
             viewModel.update(unitType)
         }
     }

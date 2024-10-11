@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import com.farkasatesz.myshoppinglist.screens.CategoryScreen
 import com.farkasatesz.myshoppinglist.screens.SupermarketScreen
+import com.farkasatesz.myshoppinglist.screens.UnitTypeScreen
 import com.farkasatesz.myshoppinglist.ui.theme.BgColor
 import com.farkasatesz.myshoppinglist.ui.theme.MyShoppingListTheme
 import org.koin.androidx.compose.koinViewModel
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyShoppingListTheme {
                 MyApp {
-                    CategoryScreen(koinViewModel())
+                    UnitTypeScreen(koinViewModel())
                 }
             }
         }
