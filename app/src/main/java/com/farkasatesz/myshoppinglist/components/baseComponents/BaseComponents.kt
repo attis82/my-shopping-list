@@ -18,6 +18,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -91,6 +93,7 @@ fun MyInput(
     modifier: Modifier = Modifier,
     value: String,
     valueChange: (String) -> Unit,
+    enabled: Boolean = true,
     label: String,
     placeholder: String,
     keyboardType: KeyboardType = KeyboardType.Text
@@ -109,6 +112,7 @@ fun MyInput(
                 keyboardController?.hide()
             }
         ),
+        enabled = enabled,
         colors = TextFieldDefaults.colors(
             focusedTextColor = TextColor,
             focusedContainerColor = CardColor,
@@ -316,5 +320,25 @@ fun <T: BaseEntity> BaseScaffold(
             }
         )
     }
+}
+
+@Composable
+fun <T:BaseEntity> DropDown(
+    list: List<T>,
+    selectItem:  (String) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+   DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+       list.forEach {
+           DropdownMenuItem(
+               text = { MyText(text = it.entityName) },
+               onClick = {
+                   selectItem(it.entityId!!)
+                   expanded = false
+               }
+           )
+       }
+   }
 }
 
