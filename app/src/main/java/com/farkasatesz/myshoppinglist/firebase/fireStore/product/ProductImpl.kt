@@ -19,23 +19,4 @@ class ProductImpl(private val db: FirebaseFirestore)
             .await()
         return !snapshot.isEmpty
     }
-
-    suspend fun getUnitTypeReference(unitTypeId: String): DocumentReference {
-        val unitRef = db.collection("unitTypes").document(unitTypeId).get().await()
-        return unitRef.reference
-    }
-
-    suspend fun getCategoryReference(categoryId: String): DocumentReference {
-        val categoryRef = db.collection("categories").document(categoryId).get().await()
-        return categoryRef.reference
-    }
-
-    suspend fun getSupermarketReference(supermarketId: String): DocumentReference {
-        val supermarketRef = db.collection("supermarkets").document(supermarketId).get().await()
-        return supermarketRef.reference
-    }
-
-
-
-
 }

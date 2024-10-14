@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -28,6 +29,9 @@ open class BaseViewModel<T : BaseEntity>(private val baseRepository: BaseReposit
     private val _showDialog = MutableStateFlow(false)
     val showDialog = _showDialog.asStateFlow()
 
+    private val _entityNames = MutableStateFlow<List<String>>(emptyList())
+    val entityNames = _entityNames.asStateFlow()
+
     private val _items = _itemName.debounce(500).flatMapLatest {
         if (it.isEmpty()) {
             baseRepository.getAll()
@@ -40,6 +44,24 @@ open class BaseViewModel<T : BaseEntity>(private val baseRepository: BaseReposit
 
     fun setSelected(item: T) {
         _selected.value = item
+    }
+
+    init {
+        getEntityNames()
+    }
+
+    private fun getEntityNames(){
+        viewModelScope.launch {
+            try {
+               baseRepository.getEntityNames()
+                   .distinctUntilChanged()
+                   .collect{
+                       _entityNames.value = it
+                   }
+            }catch (e: Exception){
+                Log.e("BaseViewModel", "Error getting entity names", e)
+            }
+        }
     }
 
     fun setEditName(name: String) {

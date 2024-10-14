@@ -61,16 +61,22 @@ open class FireStoreImpl<T : BaseEntity>(
         emit(item!!)
     }
 
-        override fun getByQuery(query: String): Flow<List<T>> = flow {
-            val snapshot = collection
-                .whereGreaterThanOrEqualTo("entityName", query)
-                .whereLessThanOrEqualTo("entityName", query + "\uf8ff")
-                .get()
-                .await()
-            val items = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(itemClass)
-            }
-            emit(items)
+    override fun getByQuery(query: String): Flow<List<T>> = flow {
+        val snapshot = collection
+            .whereGreaterThanOrEqualTo("entityName", query)
+            .whereLessThanOrEqualTo("entityName", query + "\uf8ff")
+            .get()
+            .await()
+        val items = snapshot.documents.mapNotNull { doc ->
+            doc.toObject(itemClass)
         }
-
+        emit(items)
     }
+
+    override fun getEntityNames(): Flow<List<String>> = flow {
+        val snapshot = collection.get().await()
+        val names = snapshot.documents.mapNotNull { it.getString("entityName") }
+        emit(names)
+    }
+
+}

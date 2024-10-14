@@ -9,4 +9,5 @@ interface BaseCrud <T> {
     fun getAll(): Flow<List<T>>
     fun getById(id: String): Flow<T>
     fun getByQuery(query: String): Flow<List<T>>
+    fun getEntityNames() : Flow<List<String>>
 }

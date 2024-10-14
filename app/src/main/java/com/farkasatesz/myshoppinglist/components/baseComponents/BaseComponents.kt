@@ -324,17 +324,34 @@ fun <T: BaseEntity> BaseScaffold(
 
 @Composable
 fun <T:BaseEntity> DropDown(
+    title: String,
     list: List<T>,
     selectItem:  (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf<T?>(null) }
 
-   DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+    MyButton(
+        text = {
+            MyText(text = selectedItem?.entityName ?: title)
+        },
+
+    ) {
+        expanded = !expanded
+    }
+   DropdownMenu(
+       expanded = expanded,
+       onDismissRequest = { expanded = false },
+       modifier = Modifier
+           .fillMaxWidth()
+           .padding(10.dp)
+   ) {
        list.forEach {
            DropdownMenuItem(
                text = { MyText(text = it.entityName) },
                onClick = {
                    selectItem(it.entityId!!)
+                   selectedItem = it
                    expanded = false
                }
            )

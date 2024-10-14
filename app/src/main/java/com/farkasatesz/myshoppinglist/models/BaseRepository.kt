@@ -9,4 +9,5 @@ open class BaseRepository<T : BaseEntity>(private val fireStoreImpl: FireStoreIm
     fun getAll() = fireStoreImpl.getAll()
     fun getById(id: String) = fireStoreImpl.getById(id)
     fun getByQuery(query: String) = fireStoreImpl.getByQuery(query)
+    fun getEntityNames() = fireStoreImpl.getEntityNames()
 }

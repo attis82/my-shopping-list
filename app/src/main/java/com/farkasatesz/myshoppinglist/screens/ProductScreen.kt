@@ -1,12 +1,14 @@
 package com.farkasatesz.myshoppinglist.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.farkasatesz.myshoppinglist.components.baseComponents.BaseScaffold
+import com.farkasatesz.myshoppinglist.components.typeComponents.ProductCard
 import com.farkasatesz.myshoppinglist.components.typeComponents.ProductCreator
 import com.farkasatesz.myshoppinglist.components.typeComponents.ProductTopBar
 import com.farkasatesz.myshoppinglist.models.category.CategoryViewModel
@@ -14,6 +16,7 @@ import com.farkasatesz.myshoppinglist.models.product.Product
 import com.farkasatesz.myshoppinglist.models.product.ProductViewModel
 import com.farkasatesz.myshoppinglist.models.supermarket.SupermarketViewModel
 import com.farkasatesz.myshoppinglist.models.unitType.UnitTypeViewModel
+import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun ProductScreen(
@@ -27,17 +30,16 @@ fun ProductScreen(
     val productName by productViewModel.itemName.collectAsState()
     val categories by categoryViewModel.items.collectAsState()
     val unitTypes by unitTypeViewModel.items.collectAsState()
-    val supermarkets by supermarketViewModel.items.collectAsState()
+    val supermarkets by supermarketViewModel.refs.collectAsState()
     val checkExistence by productViewModel.exists.collectAsState()
-    val unitTypeRef by unitTypeViewModel.unitTypeToRef.collectAsState()
-    val categoryRef by categoryViewModel.categoryRef.collectAsState()
-    val supermarketRef by supermarketViewModel.supermarketRef.collectAsState()
     var selectedCategoryId by remember {
         mutableStateOf("")
     }
     var selectedUnitTypeId by remember {
         mutableStateOf("")
     }
+
+
 
 
     BaseScaffold(
@@ -65,29 +67,28 @@ fun ProductScreen(
                                      },
                     checkExistence = checkExistence
                 ) {
-                    supermarkets.forEach{
-                        supermarketViewModel.getSupermarketReference(it.entityId!!)
+                    supermarkets.forEach{sm ->
                         val product = Product(
                             entityId = null,
                             entityName = productName,
-                            categoryRef = categoryRef,
-                            unitTypeRef = unitTypeRef,
-                            supermarketRef = supermarketRef,
                             quantity = 0.0,
                             price = 0.0
                         )
                         productViewModel.create(product)
+                        selectedCategoryId = ""
+                        selectedUnitTypeId = ""
+                        productViewModel.setItemName("")
                     }
 
                 }
             }
          },
         cardContent = {
+            selectedProduct = it
 
 
         }
     ) {
         selectedProduct = it
-
     }
 }

@@ -1,17 +1,15 @@
 package com.farkasatesz.myshoppinglist.models.product
 
 import com.farkasatesz.myshoppinglist.models.BaseEntity
-import com.google.firebase.firestore.DocumentReference
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
     override var entityId: String? = null,
     override var entityName: String = "",
-    @Contextual var categoryRef: DocumentReference? = null,
-    @Contextual var unitTypeRef: DocumentReference? = null,
-    @Contextual var supermarketRef: DocumentReference? = null,
+    var categoryName: String = "",
+    var unitTypeName: String = "",
+    var supermarketName: String = "",
     var price: Double = 0.0,
     var quantity: Double = 0.0
 ): BaseEntity(){
@@ -19,9 +17,9 @@ data class Product(
         return mapOf(
             "entityId" to entityId,
             "entityName" to entityName,
-            "category" to categoryRef,
-            "unitType" to unitTypeRef,
-            "supermarket" to supermarketRef,
+            "category" to categoryName,
+            "unitType" to unitTypeName,
+            "supermarket" to supermarketName,
             "price" to price,
             "quantity" to quantity
         )

@@ -25,7 +25,6 @@ import com.farkasatesz.myshoppinglist.components.baseComponents.MyButton
 import com.farkasatesz.myshoppinglist.components.baseComponents.MyInput
 import com.farkasatesz.myshoppinglist.components.baseComponents.MyText
 import com.farkasatesz.myshoppinglist.models.category.Category
-import com.farkasatesz.myshoppinglist.models.supermarket.Supermarket
 import com.farkasatesz.myshoppinglist.models.unitType.UnitType
 
 @Composable
@@ -50,10 +49,10 @@ fun ProductCreator(
             label = "Product name",
             placeholder = "Enter product name"
         )
-        DropDown(list = categories) {
+        DropDown(list = categories, title = "Categories") {
             selectCategory(it)
         }
-        DropDown(list = unitTypes) {
+        DropDown(list = unitTypes, title = "Unit types") {
             selectUnitType(it)
         }
         MyButton(
@@ -127,6 +126,7 @@ fun ProductCard(
                if(enabledQty){
                    MyButton(text = { MyText(text = "Set") }) {
                        setQuantity(quantity)
+                       enabledQty = false
                    }
                }
                MyText(text = unitTypeName)
@@ -148,6 +148,7 @@ fun ProductCard(
            if(enabledPrice){
                MyButton(text = { MyText(text = "Set") }) {
                    setPrice(price)
+                   enabledPrice = false
                }
            }
        } 

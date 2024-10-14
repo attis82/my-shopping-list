@@ -28,7 +28,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyShoppingListTheme {
                 MyApp {
-                    ProductScreen(productViewModel = koinViewModel())
+                    ProductScreen(
+                        productViewModel = koinViewModel(),
+                        categoryViewModel = koinViewModel(),
+                        unitTypeViewModel = koinViewModel(),
+                        supermarketViewModel = koinViewModel()
+                    )
                 }
             }
         }
